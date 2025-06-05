@@ -6,6 +6,9 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.13.4",
+    "@grpc/proto-loader": "^0.7.15",
+    "apollo-server-express": "^3.13.0",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.6.0",
     "compression": "^1.8.0",
@@ -14,10 +17,11 @@
     "csurf": "^1.10.0",
     "debug": "~2.6.9",
     "dotenv": "^16.5.0",
-    "express": "~4.16.1",
+    "express": "^4.17.1",
     "express-async-handler": "^1.2.0",
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^7.5.0",
+    "graphql": "^16.11.0",
     "helmet": "^8.1.0",
     "hpp": "^0.2.3",
     "http-errors": "~1.6.3",

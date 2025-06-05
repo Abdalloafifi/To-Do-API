@@ -1,30 +1,7 @@
-const Tasks= require('../models/Tasks');
+const Tasks = require('../models/Tasks');
 const asyncHandler = require('express-async-handler');
 const xss = require('xss');
 const Joi = require('joi');
-
-exports.addTask = asyncHandler(async (req, res) => {
-    const data = {
-        title: xss(req.body.title),
-        description: xss(req.body.description),
-    };
-    const {err} = validateTask(data);
-    if (err) {
-        return res.status(400).json({ message: err.details[0].message });
-    }
-    const newTask = new Tasks({
-        title: data.title,
-        description: data.description,
-        userId: req.user._id,
-    });
-    try {
-        const savedTask = await newTask.save();
-        res.status(201).json("Task added successfully", savedTask);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-
 
 exports.getTasksComplete = asyncHandler(async (req, res) => {
     try {
@@ -38,7 +15,6 @@ exports.getTasksComplete = asyncHandler(async (req, res) => {
     }
 });
 
-
 exports.getTasksNotComplete = asyncHandler(async (req, res) => {
     try {
         const tasks = await Tasks.find({ userId: req.user._id, completed: false });
@@ -46,24 +22,6 @@ exports.getTasksNotComplete = asyncHandler(async (req, res) => {
             return res.status(404).json({ message: 'No incomplete tasks found' });
         }
         res.status(200).json(tasks);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-
-
-
-
-exports.completeTask = asyncHandler(async (req, res) => {
-    const taskId = req.params.id;
-    try {
-        const task = await Tasks.findById(taskId);
-        if (!task) {
-            return res.status(404).json({ message: 'Task not found' });
-        }
-        task.completed = !task.completed;
-        await task.save();
-        res.status(200).json(task);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -82,6 +40,42 @@ exports.getTaskById = asyncHandler(async (req, res) => {
     }
 });
 
+exports.addTask = asyncHandler(async (req, res) => {
+    const data = {
+        title: xss(req.body.title),
+        description: xss(req.body.description),
+    };
+    const { err } = validateTask(data);
+    if (err) {
+        return res.status(400).json({ message: err.details[0].message });
+    }
+    const newTask = new Tasks({
+        title: data.title,
+        description: data.description,
+        userId: req.user._id,
+    });
+    try {
+        const savedTask = await newTask.save();
+        res.status(201).json("Task added successfully", savedTask);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+exports.completeTask = asyncHandler(async (req, res) => {
+    const taskId = req.params.id;
+    try {
+        const task = await Tasks.findById(taskId);
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+        task.completed = !task.completed;
+        await task.save();
+        res.status(200).json(task);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
 exports.updateTask = asyncHandler(async (req, res) => {
     const taskId = req.params.id;
@@ -110,7 +104,6 @@ function validateTask(data) {
     });
     return schema.validate(data);
 }
-
 
 exports.deleteTask = asyncHandler(async (req, res) => {
     const taskId = req.params.id;

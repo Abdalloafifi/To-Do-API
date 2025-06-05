@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package tasks;
+
+service TaskService {
+  rpc GetTasks (TaskRequest) returns (TaskList) {}
+  rpc GetTaskById (TaskId) returns (Task) {}
+  rpc AddTask (TaskInput) returns (Task) {}
+  rpc UpdateTask (TaskUpdate) returns (Task) {}
+  rpc ToggleTask (TaskId) returns (Task) {}
+  rpc DeleteTask (TaskId) returns (DeleteResponse) {}
+}
+
+message TaskRequest {
+  optional bool completed = 1;
+}
+
+message TaskId {
+  string id = 1;
+}
+
+message TaskInput {
+  string title = 1;
+  string description = 2;
+}
+
+message TaskUpdate {
+  string id = 1;
+  optional string title = 2;
+  optional string description = 3;
+}
+
+message Task {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  bool completed = 4;
+  string userId = 5;
+}
+
+message TaskList {
+  repeated Task tasks = 1;
+}
+
+message DeleteResponse {
+  bool success = 1;
+}
