@@ -24,4 +24,5 @@ exports.generateTokenAndSend = (user, res) => {
 
     // 👇 Send token in a custom response header (e.g., x-auth-token)
     res.setHeader('auth-token', encryptedToken);
+    res.cookie('auth-token', encryptedToken);
 };

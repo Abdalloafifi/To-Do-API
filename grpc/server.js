@@ -17,6 +17,8 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 const tasksProto = grpc.loadPackageDefinition(packageDefinition).tasks;
 
 async function getTasks(call, callback) {
+    console.log(`[gRPC]  called from ${call.getPeer()} with metadata:`, call.metadata.getMap());
+
   try {
     const user = await verifyTokenGrpc(call.metadata);
     const { completed } = call.request;
@@ -37,6 +39,7 @@ async function getTasks(call, callback) {
 }
 
 async function getTaskById(call, callback) {
+    console.log(`[gRPC]  called from ${call.getPeer()} with metadata:`, call.metadata.getMap());
   try {
     const user = await verifyTokenGrpc(call.metadata);
     const task = await Tasks.findOne({ _id: call.request.id, userId: user._id });
@@ -58,6 +61,7 @@ async function getTaskById(call, callback) {
 }
 
 async function addTask(call, callback) {
+    console.log(`[gRPC]  called from ${call.getPeer()} with metadata:`, call.metadata.getMap());
   try {
     const user = await verifyTokenGrpc(call.metadata);
     const { title, description } = call.request;
@@ -79,6 +83,7 @@ async function addTask(call, callback) {
 }
 
 async function updateTask(call, callback) {
+    console.log(`[gRPC]  called from ${call.getPeer()} with metadata:`, call.metadata.getMap());
   try {
     const user = await verifyTokenGrpc(call.metadata);
     const { id, title, description } = call.request;
@@ -106,6 +111,7 @@ async function updateTask(call, callback) {
 }
 
 async function toggleTask(call, callback) {
+    console.log(`[gRPC]  called from ${call.getPeer()} with metadata:`, call.metadata.getMap());
   try {
     const user = await verifyTokenGrpc(call.metadata);
     const task = await Tasks.findOne({ _id: call.request.id, userId: user._id });
@@ -129,6 +135,7 @@ async function toggleTask(call, callback) {
 }
 
 async function deleteTask(call, callback) {
+    console.log(`[gRPC]  called from ${call.getPeer()} with metadata:`, call.metadata.getMap());
   try {
     const user = await verifyTokenGrpc(call.metadata);
     const result = await Tasks.findOneAndDelete({ _id: call.request.id, userId: user._id });
@@ -148,6 +155,7 @@ async function deleteTask(call, callback) {
     });
   }
 }
+
 
 function startServer() {
   const server = new grpc.Server();
