@@ -68,7 +68,6 @@ const extractUserFromToken = async (req) => {
     if (user.documentation === false) {
       return null;
     }
-
     return user;
   } catch (error) {
     return null;
@@ -76,8 +75,7 @@ const extractUserFromToken = async (req) => {
 };
 
 
-
-
+// gRPC
 const verifyTokenGrpc = async (metadata) => {
   const encryptedToken = metadata.get('auth-token')[0];
   if (!encryptedToken) {

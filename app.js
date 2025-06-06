@@ -1,7 +1,5 @@
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
 const content = require("./config/conectet");
 const securityMiddleware = require('./middlewares/securityMiddleware');
 const { errorNotFound, errorHandler } = require('./middlewares/error');
@@ -21,6 +19,7 @@ const { typeDefs, resolvers } = require('./graphql/schema'); // سيتم إنش�
 const { extractUserFromToken } = require('./middlewares/verifytoken');
 
 
+securityMiddleware(app)
 content();
 
 
@@ -31,15 +30,10 @@ app.use(cors({
   exposedHeaders: ['auth-token']
 }));
 
-const compression = require("compression")
-app.use(compression())
 
-app.use(logger('dev'));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(securityMiddleware);
-
 app.use(express.static(path.join(__dirname, 'public')));
 
 
@@ -50,6 +44,9 @@ const apolloServer = new ApolloServer({
   resolvers,
   context: async ({ req }) => {
     const user = await extractUserFromToken(req);
+    if (!user) {
+      throw new Error('Unauthorized');
+    }
     return { user };
   },
 });
