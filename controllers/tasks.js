@@ -17,7 +17,7 @@ exports.getTasksComplete = asyncHandler(async (req, res) => {
 
 exports.getTasksNotComplete = asyncHandler(async (req, res) => {
     try {
-        const tasks = await Tasks.find({ userId: req.user._id, completed: false });
+        const tasks = await Tasks.find({ userId: req.user._id, completed: false }).sort({ createdAt: -1 }).select("title description completed ");
         if (!tasks) {
             return res.status(404).json({ message: 'No incomplete tasks found' });
         }

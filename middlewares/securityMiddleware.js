@@ -1,4 +1,6 @@
-// npm install helmet express-mongo-sanitize express-rate-limit hpp xss-clean compression express-useragent morgan csurf cookie-parser
+// npm install helmet express-mongo-sanitize express-rate-limit hpp xss-clean compression express-useragent morgan  cookie-parser 
+
+//لا يعتمد علي ال csrf
 
 const express = require('express');
 const helmet = require('helmet');
@@ -9,8 +11,8 @@ const xssClean = require('xss-clean');
 const compression = require('compression');
 const useragent = require('express-useragent');
 const morgan = require('morgan');
-const csrf = require('csurf');
 const cookieParser = require('cookie-parser');
+
 
 module.exports = (app) => {
   app.disable('x-powered-by');
@@ -24,6 +26,8 @@ module.exports = (app) => {
   app.use(express.json({ limit: '10kb' }));
   app.use(express.urlencoded({ extended: true, limit: '10kb' }));
   app.use(cookieParser());
+  
+
 
   // Content-Type Filter
   app.use((req, res, next) => {
@@ -79,17 +83,7 @@ module.exports = (app) => {
   app.use('/api/auth', authLimiter);
   app.use(generalLimiter); // لكل المسارات الأخرى
 
-  // CSRF Protection
-  const csrfProtection = csrf({ cookie: true });
-  app.use(csrfProtection);
-  app.use((req, res, next) => {
-    res.cookie('csrf_token', req.csrfToken(), {
-      httpOnly: false,
-      sameSite: 'Strict',
-      secure: process.env.NODE_ENV === 'production',
-    });
-    next();
-  });
+
 
 
 
@@ -139,9 +133,5 @@ module.exports = (app) => {
     next();
   });
 
-  // Error Handler
-  app.use((err, req, res, next) => {
-    console.error('🔥 خطأ:', err.stack);
-    res.status(500).json({ message: 'حدث خطأ بالسيرفر' });
-  });
+
 };

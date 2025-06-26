@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server-express');
+const { gql , } = require('apollo-server-express');
 const Tasks = require('../models/Tasks');
 
 // 1. تعريف النوع (TypeDefs)
@@ -23,6 +23,7 @@ const typeDefs = gql`
     deleteTask(id: ID!): Boolean!
   }
 `;
+
 
 // 2. تعريف المحللين (Resolvers)
 const resolvers = {
