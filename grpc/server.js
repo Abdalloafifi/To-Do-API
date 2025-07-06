@@ -3,6 +3,7 @@ const protoLoader = require('@grpc/proto-loader');
 const path = require('path');
 const Tasks = require('../models/Tasks');
 const { verifyTokenGrpc } = require('../middlewares/verifytoken');
+const { withSecurity } = require('../middlewares/grpcSecurity');
 
 const PROTO_PATH = path.join(__dirname, '../proto/tasks.proto');
 
@@ -159,14 +160,14 @@ async function deleteTask(call, callback) {
 
 function startServer() {
   const server = new grpc.Server();
-  server.addService(tasksProto.TaskService.service, {
-    GetTasks: getTasks,
-    GetTaskById: getTaskById,
-    AddTask: addTask,
-    UpdateTask: updateTask,
-    ToggleTask: toggleTask,
-    DeleteTask: deleteTask
-  });
+server.addService(tasksProto.TaskService.service, {
+  GetTasks: withSecurity(getTasks),
+  GetTaskById: withSecurity(getTaskById),
+  AddTask: withSecurity(addTask),
+  UpdateTask: withSecurity(updateTask),
+  ToggleTask: withSecurity(toggleTask),
+  DeleteTask: withSecurity(deleteTask)
+});
   
  const port = process.env.PORT || '50051';
 

@@ -82,6 +82,7 @@ module.exports = (app) => {
 
   app.use('/api/auth', authLimiter);
   app.use(generalLimiter); // لكل المسارات الأخرى
+app.use('/graphql', generalLimiter); // حماية إضافية لـ GraphQL
 
 
 
